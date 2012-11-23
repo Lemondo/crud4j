@@ -14,6 +14,6 @@ public interface Model<T> {
 
 	public T read(String key) throws SQLException;
 
-	public void list(OutputStream out, Map<String, ?> options) throws SQLException;
+	public void list(OutputStream out, Map<String, Object> options) throws SQLException;
 
 }
