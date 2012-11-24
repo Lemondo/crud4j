@@ -1,16 +1,16 @@
 package com.lemondo.commons.db;
 
-import java.sql.CallableStatement;
-import java.util.Map;
+import java.util.List;
+import java.util.Set;
 
 public interface ModelMetaData<T> {
 
-	public CallableStatement prepareSelectStmnt(String key, Map<String, Object> options);
+	public String genInsertSql(Set<String> columns);
 
-	public CallableStatement prepareInsertStmnt(String key, T body);
+	public String genUpdateSql(Set<String> columns);
 
-	public CallableStatement prepareUpdateStmnt(String key, T body);
+	public String genDeleteSql();
 
-	public CallableStatement prepareDeleteStmnt(String key);
+	public String genSelectSql(boolean allRows, Set<FilterCondition> filter, List<String> sortFields);
 
 }
