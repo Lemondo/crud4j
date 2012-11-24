@@ -136,18 +136,47 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 	}
 
 	private String genInsertSql(Set<String> columns) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder insertClause = new StringBuilder("INSERT INTO ").append(tableName).append(" (`id`");
+		StringBuilder valuesClause = new StringBuilder(" VALUES").append(" (?");
+
+		for (String col : columns) {
+			if (columnDef.containsKey(col)) {
+				insertClause.append(",`").append(col).append("`");
+				valuesClause.append(",?");
+			} else {
+				throw new RuntimeException("BOOM: invalid field!");
+			}
+		}
+
+		return insertClause.append(")").append(valuesClause).append(")").toString();
 	}
 
 	private String genUpdateSql(Set<String> columns) {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder updateSql = new StringBuilder("UPDATE ").append(tableName).append(" SET");
+
+		String prefix = " ";
+		for (String col : columns) {
+			if (columnDef.containsKey(col)) {
+				updateSql.append(prefix).append(col).append("=?");
+				prefix = ",";
+			} else {
+				throw new RuntimeException("BOOM: invalid field!");
+			}
+		}
+
+		return updateSql.append(" WHERE `id`=?").append(deactivatedFlag ? " AND `deactivated` = 0" : "").toString();
 	}
 
 	private String genDeleteSql() {
-		// TODO Auto-generated method stub
-		return null;
+		StringBuilder deleteSql = new StringBuilder();
+
+		if (deactivatedFlag) {
+			deleteSql.append("UPDATE ").append(tableName).append("SET `deactivated`=1 WHERE `deactivated`=0 AND `id`=?");
+		} else {
+			deleteSql.append("DELETE FROM ").append(tableName).append(" WHERE `id`=?");
+		}
+
+		return deleteSql.toString();
 	}
 
 	@Override
@@ -155,15 +184,15 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		Set<FilterCondition> filter = extractFilterFields(options);
 		List<String> sortFields = extractSortFields(options);
 		boolean allRows = key == null;
-		
+
 		try {
 			CallableStatement stmnt = helper.prepareCall(genSelectSql(allRows, filter, sortFields));
-			
+
 			int i = 1;
 			if (!allRows) {
 				stmnt.setString(i++, key);
 			}
-			
+
 			for (FilterCondition condition : filter) {
 				stmnt.setObject(i++, condition.value, condition.type);
 			}
@@ -171,23 +200,65 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 
 			return stmnt;
 		} catch (SQLException e) {
-			throw new RuntimeException("BOOM!!", e);
+			throw new RuntimeException("BOOM!", e);
 		}
 	}
 
 	@Override
 	public CallableStatement prepareInsertStmnt(String key, Map<String, Object> body) {
-		throw new RuntimeException("Not inmpelented");
+		Set<String> columns = body.keySet();
+		try {
+			CallableStatement stmnt = helper.prepareCall(genInsertSql(columns));
+
+			int i = 1;
+			stmnt.setString(i++, key);
+			for (String col : columns) {
+				if (columnDef.containsKey(col)) {
+					stmnt.setObject(i++, body.get(col), columnDef.get(col));
+				} else {
+					throw new RuntimeException("BOOM: invalid field!");
+				}
+			}
+
+			return stmnt;
+		} catch (SQLException e) {
+			throw new RuntimeException("BOOM!", e);
+		}
 	}
 
 	@Override
 	public CallableStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
-		throw new RuntimeException("Not inmpelented");
+		Set<String> columns = body.keySet();
+		try {
+			CallableStatement stmnt = helper.prepareCall(genUpdateSql(columns));
+
+			int i = 1;
+			for (String col : columns) {
+				if (columnDef.containsKey(col)) {
+					stmnt.setObject(i++, body.get(col), columnDef.get(col));
+				} else {
+					throw new RuntimeException("BOOM: invalid field!");
+				}
+			}
+			stmnt.setString(i, key);
+
+			return stmnt;
+		} catch (SQLException e) {
+			throw new RuntimeException("BOOM!", e);
+		}
 	}
 
 	@Override
 	public CallableStatement prepareDeleteStmnt(String key) {
-		throw new RuntimeException("Not inmpelented");
+		try {
+			CallableStatement stmnt = helper.prepareCall(genDeleteSql());
+
+			stmnt.setString(1, key);
+
+			return stmnt;
+		} catch (SQLException e) {
+			throw new RuntimeException("BOOM!", e);
+		}
 	}
 
 }

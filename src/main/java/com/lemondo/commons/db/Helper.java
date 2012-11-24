@@ -24,7 +24,7 @@ public class Helper {
 		try {
 			this.ds = (DataSource) new InitialContext().lookup(this.dataSourceJndi);
 		} catch (NamingException e) {
-			throw new RuntimeException("BOOM!!");
+			throw new RuntimeException("BOOM!");
 		}
 		this.statementPool = new ArrayList<CallableStatement>();
 	}
