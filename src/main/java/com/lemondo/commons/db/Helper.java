@@ -19,9 +19,13 @@ public class Helper {
 	private Connection conn;
 	private List<CallableStatement> statementPool;
 
-	public Helper(String dataSourceJndi) throws NamingException {
+	public Helper(String dataSourceJndi) {
 		this.dataSourceJndi = dataSourceJndi;
-		this.ds = (DataSource) new InitialContext().lookup(this.dataSourceJndi);
+		try {
+			this.ds = (DataSource) new InitialContext().lookup(this.dataSourceJndi);
+		} catch (NamingException e) {
+			throw new RuntimeException("BOOM!!");
+		}
 		this.statementPool = new ArrayList<CallableStatement>();
 	}
 

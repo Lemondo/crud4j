@@ -1,6 +1,7 @@
 package com.lemondo.commons.db;
 
 import java.sql.CallableStatement;
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -8,15 +9,22 @@ import java.util.Set;
 
 public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 
+	private Helper helper;
+
 	private String tableName;
 	private Map<String, Integer> columnDef;
 	private boolean deactivatedFlag;
 
-	public TableMetaData(String tableName, Map<String, Integer> columnDef, boolean deactivatedFlag) {
+	public TableMetaData(Helper helper, String tableName, Map<String, Integer> columnDef, boolean deactivatedFlag) {
 		super();
+		this.helper = helper;
 		this.tableName = tableName;
 		this.columnDef = columnDef;
 		this.deactivatedFlag = deactivatedFlag;
+	}
+
+	public TableMetaData(String dataSourceJndi, String tableName, Map<String, Integer> columnDef, boolean deactivatedFlag) {
+		this(new Helper(dataSourceJndi), tableName, columnDef, deactivatedFlag);
 	}
 
 	private class FilterCondition {
@@ -69,11 +77,11 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		}
 	}
 
-	private String genFilterString(Set<FilterCondition> filterColumns) {
+	private String genFilterString(Set<FilterCondition> filter) {
 		StringBuilder result = new StringBuilder();
 
 		String prefix = "";
-		for (FilterCondition condition : filterColumns) {
+		for (FilterCondition condition : filter) {
 			result.append(prefix).append("`").append(condition.columnName).append(condition.operator).append("?");
 			prefix = " AND ";
 		}
@@ -97,7 +105,7 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		}
 	}
 
-	private String genSelectSql(Map<String, Object> options, boolean allRows, Set<FilterCondition> filter, List<String> sortFields) {
+	private String genSelectSql(boolean allRows, Set<FilterCondition> filter, List<String> sortFields) {
 		StringBuilder selectSql = new StringBuilder("SELECT `id`");
 
 		Set<String> columns = columnDef.keySet();
@@ -144,7 +152,27 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 
 	@Override
 	public CallableStatement prepareSelectStmnt(String key, Map<String, Object> options) {
-		throw new RuntimeException("Not inmpelented");
+		Set<FilterCondition> filter = extractFilterFields(options);
+		List<String> sortFields = extractSortFields(options);
+		boolean allRows = key == null;
+		
+		try {
+			CallableStatement stmnt = helper.prepareCall(genSelectSql(allRows, filter, sortFields));
+			
+			int i = 1;
+			if (!allRows) {
+				stmnt.setString(i++, key);
+			}
+			
+			for (FilterCondition condition : filter) {
+				stmnt.setObject(i++, condition.value, condition.type);
+			}
+			// TODO Add paging here
+
+			return stmnt;
+		} catch (SQLException e) {
+			throw new RuntimeException("BOOM!!", e);
+		}
 	}
 
 	@Override
