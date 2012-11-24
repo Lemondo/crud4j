@@ -33,7 +33,7 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		}
 	}
 
-	private Set<FilterCondition> extractFilter(Map<String, Object> options) {
+	private Set<FilterCondition> extractFilterFields(Map<String, Object> options) {
 		Object filterRaw = options.get("filter");
 		if (filterRaw == null) {
 			return null;
@@ -56,6 +56,19 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		}
 	}
 
+	private List<String> extractSortFields(Map<String, Object> options) {
+		Object sortFieldsRaw = options.get("order");
+		if (sortFieldsRaw == null) {
+			return null;
+		} else if (!(sortFieldsRaw instanceof List)) {
+			throw new RuntimeException("BOOM!");
+		} else {
+			@SuppressWarnings("unchecked")
+			List<String> sortFields = (List<String>) sortFieldsRaw;
+			return sortFields;
+		}
+	}
+
 	private String genFilterString(Set<FilterCondition> filterColumns) {
 		StringBuilder result = new StringBuilder();
 
@@ -73,13 +86,13 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 			throw new RuntimeException("BOOM!");
 		} else {
 			StringBuilder result = new StringBuilder();
-			
+
 			String prefix = " ORDER BY ";
 			for (int i = 0; i < sortFields.size(); i++) {
 				result.append(prefix).append("`").append(sortFields.get(i)).append("`");
 				prefix = ",";
 			}
-			
+
 			return result.toString();
 		}
 	}
