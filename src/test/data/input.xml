@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+
+    <!-- Test Table -->
+    <test_table
+        id="1"
+        empcode="E005"
+        loginenabled="y"
+        loginname="foo"
+        password="bar" />
+    <test_table
+        id="2"
+        empcode="E006"
+        loginenabled="n"
+        loginname="baz"
+        password="quz" />
+
+</dataset>
