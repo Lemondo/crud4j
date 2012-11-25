@@ -22,34 +22,6 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		return new HashMap<String, Integer>(this.columnDef);
 	}
 
-	private String genFilterString(Set<FilterCondition> filter) {
-		StringBuilder result = new StringBuilder();
-
-		String prefix = "";
-		for (FilterCondition condition : filter) {
-			result.append(prefix).append("`").append(condition.columnName).append(condition.operator).append("?");
-			prefix = " AND ";
-		}
-
-		return result.toString();
-	}
-
-	private String genOrderByString(List<String> sortFields) {
-		if (sortFields == null) {
-			throw new RuntimeException("BOOM!");
-		} else {
-			StringBuilder result = new StringBuilder();
-
-			String prefix = " ORDER BY ";
-			for (int i = 0; i < sortFields.size(); i++) {
-				result.append(prefix).append("`").append(sortFields.get(i)).append("`");
-				prefix = ",";
-			}
-
-			return result.toString();
-		}
-	}
-
 	@Override
 	public String genInsertSql(Set<String> columns) {
 		StringBuilder insertClause = new StringBuilder("INSERT INTO ").append(tableName).append(" (`id`");
@@ -97,6 +69,34 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		return deleteSql.toString();
 	}
 
+	private String genFilterString(Set<FilterCondition> filter) {
+		StringBuilder result = new StringBuilder();
+
+		String prefix = "";
+		for (FilterCondition condition : filter) {
+			result.append(prefix).append("`").append(condition.columnName).append("`").append(condition.operator).append("?");
+			prefix = " AND ";
+		}
+
+		return result.toString();
+	}
+
+	private String genOrderByString(List<String> sortFields) {
+		if (sortFields == null) {
+			throw new RuntimeException("BOOM!");
+		} else {
+			StringBuilder result = new StringBuilder();
+
+			String prefix = " ORDER BY ";
+			for (int i = 0; i < sortFields.size(); i++) {
+				result.append(prefix).append("`").append(sortFields.get(i)).append("`");
+				prefix = ",";
+			}
+
+			return result.toString();
+		}
+	}
+
 	@Override
 	public String genSelectSql(boolean allRows, Set<FilterCondition> filter, List<String> sortFields) {
 		StringBuilder selectSql = new StringBuilder("SELECT `id`");
@@ -110,11 +110,11 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 
 		String filterPrefix = " WHERE ";
 		if (deactivatedFlag) {
-			selectSql.append(filterPrefix).append("`deactivated` = 0");
+			selectSql.append(filterPrefix).append("`deactivated`=0");
 			filterPrefix = " AND ";
 		}
 		if (!allRows) {
-			selectSql.append(filterPrefix).append("`id` = ?");
+			selectSql.append(filterPrefix).append("`id`=?");
 			filterPrefix = " AND ";
 		}
 		if (filter != null) {

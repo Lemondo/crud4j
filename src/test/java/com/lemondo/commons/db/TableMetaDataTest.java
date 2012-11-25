@@ -1,13 +1,14 @@
-package com.lemondo.commons.db.test;
+package com.lemondo.commons.db;
 
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import junit.framework.TestCase;
-
-import com.lemondo.commons.db.TableMetaData;
 
 public class TableMetaDataTest extends TestCase {
 
@@ -99,8 +100,67 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(expected, actual);
 	}
 
-	public void testGenSelectSql() {
-		fail("Not yet implemented");
+	public void testGenSelectOneSql() {
+		Set<String> columns = columnDef.keySet();
+
+		StringBuilder expected = new StringBuilder("SELECT `id`");
+		for (String col : columns) {
+			expected.append(",`").append(col).append("`");
+		}
+		expected.append(" FROM test_table WHERE `deactivated`=0 AND `id`=?");
+
+		String actual = metaDataWithDeactivatedFlag.genSelectSql(false, null, null);
+
+		assertEquals(expected.toString(), actual);
+	}
+
+	public void testGenSelectAllSql() {
+		Set<String> columns = columnDef.keySet();
+
+		StringBuilder expected = new StringBuilder("SELECT `id`");
+		for (String col : columns) {
+			expected.append(",`").append(col).append("`");
+		}
+		expected.append(" FROM test_table WHERE `deactivated`=0");
+
+		Set<FilterCondition> filter = new HashSet<FilterCondition>();
+		filter.add(new FilterCondition("loginenabled", "=", "y", Types.VARCHAR));
+		filter.add(new FilterCondition("empcode", ">", 100, Types.VARCHAR));
+
+		for (FilterCondition condition : filter) {
+			expected.append(" AND `").append(condition.columnName).append("`").append(condition.operator).append("?");
+		}
+
+		String actual = metaDataWithDeactivatedFlag.genSelectSql(true, filter, null);
+
+		assertEquals(expected.toString(), actual);
+	}
+
+	public void testGenSelectOrderedSql() {
+		Set<String> columns = columnDef.keySet();
+
+		StringBuilder expected = new StringBuilder("SELECT `id`");
+		for (String col : columns) {
+			expected.append(",`").append(col).append("`");
+		}
+		expected.append(" FROM test_table WHERE `deactivated`=0");
+
+		Set<FilterCondition> filter = new HashSet<FilterCondition>();
+		filter.add(new FilterCondition("loginenabled", "=", "y", Types.VARCHAR));
+		filter.add(new FilterCondition("empcode", ">", 100, Types.VARCHAR));
+
+		for (FilterCondition condition : filter) {
+			expected.append(" AND `").append(condition.columnName).append("`").append(condition.operator).append("?");
+		}
+		expected.append(" ORDER BY `loginname`,`empcode`");
+
+		List<String> sortFields = new ArrayList<String>();
+		sortFields.add("loginname");
+		sortFields.add("empcode");
+
+		String actual = metaDataWithDeactivatedFlag.genSelectSql(true, filter, sortFields);
+
+		assertEquals(expected.toString(), actual);
 	}
 
 }

@@ -1,4 +1,4 @@
-package com.lemondo.commons.db.test;
+package com.lemondo.commons.db;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
