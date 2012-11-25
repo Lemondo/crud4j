@@ -3,14 +3,16 @@
 
     <!-- Test Table -->
     <test_table
-        id="1"
-        empcode="E005"
+        id="E005"
+        deactivated="0"
+        empcode="1"
         loginenabled="y"
         loginname="foo"
         password="bar" />
     <test_table
-        id="2"
-        empcode="E006"
+        id="E006"
+        deactivated="0"
+        empcode="999999"
         loginenabled="n"
         loginname="baz"
         password="quz" />
