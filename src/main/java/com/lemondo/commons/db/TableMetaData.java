@@ -71,17 +71,17 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 	public String genUpdateSql(Set<String> columns) {
 		StringBuilder updateSql = new StringBuilder("UPDATE ").append(tableName).append(" SET");
 
-		String prefix = " ";
+		String prefix = " `";
 		for (String col : columns) {
 			if (columnDef.containsKey(col)) {
-				updateSql.append(prefix).append(col).append("=?");
-				prefix = ",";
+				updateSql.append(prefix).append(col).append("`=?");
+				prefix = ",`";
 			} else {
 				throw new RuntimeException("BOOM: invalid field!");
 			}
 		}
 
-		return updateSql.append(" WHERE `id`=?").append(deactivatedFlag ? " AND `deactivated` = 0" : "").toString();
+		return updateSql.append(" WHERE `id`=?").append(deactivatedFlag ? " AND `deactivated`=0" : "").toString();
 	}
 
 	@Override
@@ -89,7 +89,7 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 		StringBuilder deleteSql = new StringBuilder();
 
 		if (deactivatedFlag) {
-			deleteSql.append("UPDATE ").append(tableName).append("SET `deactivated`=1 WHERE `deactivated`=0 AND `id`=?");
+			deleteSql.append("UPDATE ").append(tableName).append(" SET `deactivated`=1 WHERE `deactivated`=0 AND `id`=?");
 		} else {
 			deleteSql.append("DELETE FROM ").append(tableName).append(" WHERE `id`=?");
 		}
