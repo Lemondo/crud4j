@@ -7,30 +7,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class Helper {
 
-	private final String dataSourceJndi;
 	private final DataSource ds;
 
 	private Connection conn;
 	private List<CallableStatement> statementPool;
 
-	public Helper(String dataSourceJndi) {
-		this.dataSourceJndi = dataSourceJndi;
-		try {
-			this.ds = (DataSource) new InitialContext().lookup(this.dataSourceJndi);
-		} catch (NamingException e) {
-			throw new RuntimeException("BOOM!");
-		}
+	public Helper(DataSource ds) {
+		this.ds = ds;
 		this.statementPool = new ArrayList<CallableStatement>();
-	}
-
-	public String getDataSourceJndi() {
-		return this.dataSourceJndi;
 	}
 
 	public Connection getConnection() throws SQLException {
