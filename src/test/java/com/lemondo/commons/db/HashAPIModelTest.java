@@ -117,4 +117,17 @@ public class HashAPIModelTest extends DatabaseTestCase {
 		assertEquals(0, m.update("E011", body));
 	}
 
+	public void testDeleteWithoutDeactivatedFlag() throws Exception {
+		HashAPIModel m = new HashAPIModel(helper);
+		List<ProcParam> params = new ArrayList<ProcParam>();
+		params.add(new ProcParam("key", Types.VARCHAR));
+		m.setDeleteApi(new ProcMetaData("del_test_table", params, Types.INTEGER));
+
+		assertEquals(1, m.delete("E999"));
+
+		IDataSet actual = getConnection().createDataSet(new String[] { "test_table" });
+		IDataSet expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testDeleteWithoutDeactivatedFlag.xml"));
+		Assertion.assertEquals(expected, actual);
+	}
+
 }
