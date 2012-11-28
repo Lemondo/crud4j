@@ -5,7 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.DriverManager;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -141,17 +143,59 @@ public class HashModelTest extends DatabaseTestCase {
 		try {
 			m.read("D001");
 			fail("Should throw an exception when trying to get deleted entry");
+		} catch (Exception e) {
+		}
+
+		try {
 			m.read("E011");
 			fail("Should throw an exception when trying to get non existent entry");
 		} catch (Exception e) {
 		}
 	}
 
-	// public void testListMapOfStringObject() throws Exception {
-	// fail("Not yet implemented");
-	// }
-	//
-	// public void testListOutputStreamMapOfStringObject() throws Exception {
+	public void testListAsListOfMap() throws Exception {
+		HashModel m = new HashModel(testTable01MetaData, helper);
+
+		Map<String, Object> options = new HashMap<String, Object>();
+		List<String> sortFields = new ArrayList<String>();
+		sortFields.add("loginenabled DESC");
+		sortFields.add("loginname");
+		options.put("order", sortFields);
+
+		List<Map<String, Object>> result = m.list(options);
+
+		Map<String, Object> row0 = result.get(0);
+		assertEquals("E001", row0.get("id"));
+		assertEquals(new Integer(1), (Integer) row0.get("empcode"));
+		assertEquals("foo", row0.get("loginname"));
+		assertEquals("bar", row0.get("password"));
+		assertEquals("y", row0.get("loginenabled"));
+
+		Map<String, Object> row1 = result.get(1);
+		assertEquals("E999", row1.get("id"));
+		assertEquals(new Integer(999999), (Integer) row1.get("empcode"));
+		assertEquals("baz", row1.get("loginname"));
+		assertEquals("quz", row1.get("password"));
+		assertEquals("n", row1.get("loginenabled"));
+
+		options = new HashMap<String, Object>();
+		Map<String, Object> filter = new HashMap<String, Object>();
+		filter.put("empcode", 999999);
+		options.put("filter", filter);
+
+		result = m.list(options);
+
+		assertEquals(1, result.size());
+		Map<String, Object> row = result.get(0);
+		assertEquals("E999", row.get("id"));
+		assertEquals(new Integer(999999), (Integer) row.get("empcode"));
+		assertEquals("baz", row.get("loginname"));
+		assertEquals("quz", row.get("password"));
+		assertEquals("n", row.get("loginenabled"));
+	}
+
+	// TODO: implement testListInOutputStream
+	// public void testListInOutputStream() throws Exception {
 	// fail("Not yet implemented");
 	// }
 

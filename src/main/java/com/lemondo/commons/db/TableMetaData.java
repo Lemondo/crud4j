@@ -89,7 +89,7 @@ public class TableMetaData implements ModelMetaData<Map<String, Object>> {
 
 			String prefix = " ORDER BY ";
 			for (int i = 0; i < sortFields.size(); i++) {
-				result.append(prefix).append("`").append(sortFields.get(i)).append("`");
+				result.append(prefix).append(sortFields.get(i));
 				prefix = ",";
 			}
 
