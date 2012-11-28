@@ -2,6 +2,13 @@
 <dataset>
 
     <test_table
+        id="D001"
+        deactivated="1"
+        empcode="69"
+        loginenabled="n"
+        loginname="anakin"
+        password="skywalker" />
+    <test_table
         id="E001"
         deactivated="0"
         empcode="1"
@@ -15,5 +22,5 @@
         loginenabled="n"
         loginname="baz"
         password="quz" />
-
+    
 </dataset>

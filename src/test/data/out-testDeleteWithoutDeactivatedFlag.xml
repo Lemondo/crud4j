@@ -15,19 +15,5 @@
         loginenabled="y"
         loginname="foo"
         password="bar" />
-    <test_table
-        id="E011"
-        deactivated="0"
-        empcode="11"
-        loginenabled="y"
-        loginname="obi_wan_kenobi"
-        password="supersecretpassword" />
-    <test_table
-        id="E999"
-        deactivated="0"
-        empcode="999999"
-        loginenabled="n"
-        loginname="baz"
-        password="quz" />
     
 </dataset>
