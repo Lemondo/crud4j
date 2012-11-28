@@ -14,7 +14,7 @@ public class TableMetaData implements ModelMetaData {
 	public TableMetaData(String tableName, Map<String, Integer> columnDef, boolean deactivatedFlag) {
 		super();
 		this.tableName = tableName;
-		this.columnDef = columnDef;
+		this.columnDef = new HashMap<String, Integer>(columnDef);
 		this.deactivatedFlag = deactivatedFlag;
 	}
 
