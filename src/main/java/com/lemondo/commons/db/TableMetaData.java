@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TableMetaData implements ModelMetaData<Map<String, Object>> {
+public class TableMetaData implements ModelMetaData {
 
 	private String tableName;
 	private Map<String, Integer> columnDef;

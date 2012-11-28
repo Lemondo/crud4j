@@ -3,7 +3,7 @@ package com.lemondo.commons.db;
 import java.util.List;
 import java.util.Set;
 
-public interface ModelMetaData<T> {
+public interface ModelMetaData {
 
 	public String genInsertSql(Set<String> columns);
 

@@ -155,8 +155,8 @@ public class TableMetaDataTest extends TestCase {
 		expected.append(" ORDER BY `loginname`,`empcode`");
 
 		List<String> sortFields = new ArrayList<String>();
-		sortFields.add("loginname");
-		sortFields.add("empcode");
+		sortFields.add("`loginname`");
+		sortFields.add("`empcode`");
 
 		String actual = metaDataWithDeactivatedFlag.genSelectSql(true, filter, sortFields);
 
