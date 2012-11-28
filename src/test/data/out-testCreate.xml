@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
-    <!-- Test Table -->
     <test_table
         id="E001"
         deactivated="0"
@@ -9,6 +8,13 @@
         loginenabled="y"
         loginname="foo"
         password="bar" />
+    <test_table
+        id="E011"
+        deactivated="0"
+        empcode="11"
+        loginenabled="y"
+        loginname="obi_wan_kenobi"
+        password="supersecretpassword" />
     <test_table
         id="E999"
         deactivated="0"

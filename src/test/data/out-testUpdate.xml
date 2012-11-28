@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataset>
 
-    <!-- Test Table -->
     <test_table
         id="E001"
         deactivated="0"
         empcode="1"
         loginenabled="y"
-        loginname="foo"
-        password="bar" />
+        loginname="obi_wan_kenobi"
+        password="supersecretpassword" />
     <test_table
         id="E999"
         deactivated="0"
