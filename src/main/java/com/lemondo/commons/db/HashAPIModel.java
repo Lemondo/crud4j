@@ -59,13 +59,20 @@ public class HashAPIModel extends HashModel {
 		}
 
 		List<ProcParam> params = proc.getParamDef();
-
-		for (int i = 0; i < params.size(); i++) {
-			Object val = args.get(params.get(i).getName());
-			if (val != null) {
-				stmnt.setObject(startInd + i, val, params.get(i).getType());
+		if (params != null) {
+			if (args == null) {
+				for (int i = 0; i < params.size(); i++) {
+					stmnt.setNull(startInd + i, params.get(i).getType());
+				}
 			} else {
-				stmnt.setNull(startInd + i, params.get(i).getType());
+				for (int i = 0; i < params.size(); i++) {
+					Object val = args.get(params.get(i).getName());
+					if (val != null) {
+						stmnt.setObject(startInd + i, val, params.get(i).getType());
+					} else {
+						stmnt.setNull(startInd + i, params.get(i).getType());
+					}
+				}
 			}
 		}
 
