@@ -1,25 +1,25 @@
 package com.lemondo.commons.db;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProcMetaData {
 
 	private final String procName;
-	private final Map<String, Integer> paramDef;
+	private final List<ProcParam> paramDef;
 	private final boolean returnsValue;
 	private final Integer returnType;
 
-	public ProcMetaData(String proc, Map<String, Integer> params) {
+	public ProcMetaData(String proc, List<ProcParam> params) {
 		this.procName = proc;
-		this.paramDef = new HashMap<String, Integer>(params);
+		this.paramDef = new ArrayList<ProcParam>(params);
 		this.returnsValue = false;
-		this.returnType = 0;
+		this.returnType = null;
 	}
 
-	public ProcMetaData(String proc, Map<String, Integer> params, int retType) {
+	public ProcMetaData(String proc, List<ProcParam> params, int retType) {
 		this.procName = proc;
-		this.paramDef = new HashMap<String, Integer>(params);
+		this.paramDef = new ArrayList<ProcParam>(params);
 		this.returnsValue = true;
 		this.returnType = retType;
 	}
@@ -28,8 +28,8 @@ public class ProcMetaData {
 		return procName;
 	}
 
-	public Map<String, Integer> getParamDef() {
-		return new HashMap<String, Integer>(paramDef);
+	public List<ProcParam> getParamDef() {
+		return new ArrayList<ProcParam>(paramDef);
 	}
 
 	public Integer getReturnType() {

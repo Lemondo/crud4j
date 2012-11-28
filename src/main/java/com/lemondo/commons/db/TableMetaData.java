@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class TableMetaData implements ModelMetaData {
+public class TableMetaData {
 
 	private String tableName;
 	private Map<String, Integer> columnDef;
@@ -22,7 +22,6 @@ public class TableMetaData implements ModelMetaData {
 		return new HashMap<String, Integer>(this.columnDef);
 	}
 
-	@Override
 	public String genInsertSql(Set<String> columns) {
 		StringBuilder insertClause = new StringBuilder("INSERT INTO ").append(tableName).append(" (`id`");
 		StringBuilder valuesClause = new StringBuilder(" VALUES").append(" (?");
@@ -39,7 +38,6 @@ public class TableMetaData implements ModelMetaData {
 		return insertClause.append(")").append(valuesClause).append(")").toString();
 	}
 
-	@Override
 	public String genUpdateSql(Set<String> columns) {
 		StringBuilder updateSql = new StringBuilder("UPDATE ").append(tableName).append(" SET");
 
@@ -56,7 +54,6 @@ public class TableMetaData implements ModelMetaData {
 		return updateSql.append(" WHERE `id`=?").append(deactivatedFlag ? " AND `deactivated`=0" : "").toString();
 	}
 
-	@Override
 	public String genDeleteSql() {
 		StringBuilder deleteSql = new StringBuilder();
 
@@ -97,7 +94,6 @@ public class TableMetaData implements ModelMetaData {
 		}
 	}
 
-	@Override
 	public String genSelectSql(boolean allRows, Set<FilterCondition> filter, List<String> sortFields) {
 		StringBuilder selectSql = new StringBuilder("SELECT `id`");
 

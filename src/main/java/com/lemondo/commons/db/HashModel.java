@@ -175,7 +175,7 @@ public class HashModel implements Model<Map<String, Object>> {
 		}
 	}
 
-	private Map<String, Object> getRowAsMap(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException {
+	protected Map<String, Object> getRowAsMap(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException {
 		Map<String, Object> result = new HashMap<String, Object>();
 		for (int i = 1; i <= numColumns; i++) {
 			result.put(rsmd.getColumnName(i), rs.getObject(i));

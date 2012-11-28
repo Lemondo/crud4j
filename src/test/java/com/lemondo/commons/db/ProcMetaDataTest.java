@@ -1,7 +1,8 @@
 package com.lemondo.commons.db;
 
 import java.sql.Types;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -12,9 +13,9 @@ public class ProcMetaDataTest extends TestCase {
 	}
 
 	public void testGenProcedureCall() {
-		HashMap<String, Integer> params = new HashMap<String, Integer>();
-		params.put("foo", Types.VARCHAR);
-		params.put("bar", Types.VARCHAR);
+		List<ProcParam> params = new ArrayList<ProcParam>();
+		params.add(new ProcParam("Foo", Types.VARCHAR));
+		params.add(new ProcParam("bar", Types.VARCHAR));
 
 		ProcMetaData p = new ProcMetaData("test_proc", params);
 
