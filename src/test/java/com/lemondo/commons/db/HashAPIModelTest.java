@@ -71,14 +71,14 @@ public class HashAPIModelTest extends DatabaseTestCase {
 		params.add(new ProcParam("empcode", Types.INTEGER));
 		params.add(new ProcParam("loginname", Types.VARCHAR));
 		params.add(new ProcParam("password", Types.VARCHAR));
-		params.add(new ProcParam("__loginenabled", Types.VARCHAR));
+		params.add(new ProcParam("loginenabled", Types.VARCHAR));
 		m.setInsertApi(new ProcMetaData("ins_test_table", params));
 
 		HashMap<String, Object> body = new HashMap<String, Object>();
 		body.put("empcode", 11);
 		body.put("loginname", "obi_wan_kenobi");
 		body.put("password", "supersecretpassword");
-		body.put("loginenabled", "y");
+		body.put("__loginenabled", "y");
 
 		assertEquals(1, m.create("E011", body));
 
@@ -91,6 +91,30 @@ public class HashAPIModelTest extends DatabaseTestCase {
 			fail("Should throw an exception when trying to insert duplicate entry");
 		} catch (Exception e) {
 		}
+	}
+
+	public void testUpdate() throws Exception {
+		HashAPIModel m = new HashAPIModel(helper);
+		List<ProcParam> params = new ArrayList<ProcParam>();
+		params.add(new ProcParam("key", Types.VARCHAR));
+		params.add(new ProcParam("empcode", Types.INTEGER));
+		params.add(new ProcParam("loginname", Types.VARCHAR));
+		params.add(new ProcParam("password", Types.VARCHAR));
+		params.add(new ProcParam("loginenabled", Types.VARCHAR));
+		m.setUpdateApi(new ProcMetaData("upd_test_table", params, Types.INTEGER));
+
+		HashMap<String, Object> body = new HashMap<String, Object>();
+		body.put("empcode", 7);
+		body.put("loginname", "obi_wan_kenobi");
+		body.put("password", "supersecretpassword");
+
+		assertEquals(1, m.update("E001", body));
+
+		IDataSet actual = getConnection().createDataSet(new String[] { "test_table" });
+		IDataSet expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-api-testUpdate.xml"));
+		Assertion.assertEquals(expected, actual);
+
+		assertEquals(0, m.update("E011", body));
 	}
 
 }

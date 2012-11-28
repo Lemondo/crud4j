@@ -37,9 +37,11 @@ public class ProcMetaData {
 	}
 
 	public String genProcedureCall() {
-		StringBuilder result = new StringBuilder("CALL ");
+		StringBuilder result = new StringBuilder();
 		if (returnsValue) {
-			result.append("? = ");
+			result.append("{?=CALL ");
+		} else {
+			result.append("CALL ");
 		}
 		result.append("`").append(procName).append("`");
 		if (paramDef != null && paramDef.size() > 0) {
@@ -48,6 +50,9 @@ public class ProcMetaData {
 				result.append(",?");
 			}
 			result.append(")");
+		}
+		if (returnsValue) {
+			result.append("}");
 		}
 		return result.toString();
 	}

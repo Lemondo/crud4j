@@ -22,4 +22,14 @@ public class ProcMetaDataTest extends TestCase {
 		assertEquals("CALL `test_proc`(?,?)", p.genProcedureCall());
 	}
 
+	public void testGenFunctionCall() {
+		List<ProcParam> params = new ArrayList<ProcParam>();
+		params.add(new ProcParam("foo", Types.VARCHAR));
+		params.add(new ProcParam("bar", Types.VARCHAR));
+
+		ProcMetaData p = new ProcMetaData("test_proc", params, Types.INTEGER);
+
+		assertEquals("{?=CALL `test_proc`(?,?)}", p.genProcedureCall());
+	}
+
 }
