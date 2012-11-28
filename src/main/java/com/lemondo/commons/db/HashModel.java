@@ -23,7 +23,7 @@ public class HashModel implements Model<Map<String, Object>> {
 	public HashModel(TableMetaData meta, Helper helper) {
 		super();
 		this.metaData = meta;
-		this.columnDef = this.metaData.getColumnDef();
+		this.columnDef = (this.metaData == null) ? null : this.metaData.getColumnDef();
 		this.helper = helper;
 	}
 

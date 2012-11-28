@@ -29,6 +29,26 @@ public class HashAPIModel extends HashModel {
 		super(meta, helper);
 	}
 
+	public void setInsertApi(ProcMetaData insertApi) {
+		this.insertApi = insertApi;
+	}
+
+	public void setUpdateApi(ProcMetaData updateApi) {
+		this.updateApi = updateApi;
+	}
+
+	public void setDeleteApi(ProcMetaData deleteApi) {
+		this.deleteApi = deleteApi;
+	}
+
+	public void setReadApi(ProcMetaData readApi) {
+		this.readApi = readApi;
+	}
+
+	public void setListApi(ProcMetaData listApi) {
+		this.listApi = listApi;
+	}
+
 	private CallableStatement prepareAPIProc(ProcMetaData proc, Map<String, Object> args) throws SQLException {
 		CallableStatement stmnt = helper.prepareCall(proc.genProcedureCall());
 
@@ -45,7 +65,7 @@ public class HashAPIModel extends HashModel {
 			if (val != null) {
 				stmnt.setObject(startInd + i, val, params.get(i).getType());
 			} else {
-				break;
+				stmnt.setNull(startInd + i, params.get(i).getType());
 			}
 		}
 
@@ -56,7 +76,7 @@ public class HashAPIModel extends HashModel {
 		CallableStatement stmnt = prepareAPIProc(proc, args);
 		stmnt.execute();
 
-		if (proc.getReturnType() == Types.INTEGER) {
+		if (proc.getReturnType() != null && proc.getReturnType() == Types.INTEGER) {
 			return stmnt.getInt(1);
 		} else {
 			return 1;

@@ -54,7 +54,7 @@ public class SampleTest extends DatabaseTestCase {
 	public void testTheTest() throws Exception {
 		assertNotNull(loadedDataSet);
 		assertEquals(3, loadedDataSet.getTable("test_table").getRowCount());
-		Assertion.assertEquals(loadedDataSet, getConnection().createDataSet());
+		Assertion.assertEquals(loadedDataSet, getConnection().createDataSet(new String[] { "test_table" }));
 	}
 
 }

@@ -14,7 +14,7 @@ public class ProcMetaDataTest extends TestCase {
 
 	public void testGenProcedureCall() {
 		List<ProcParam> params = new ArrayList<ProcParam>();
-		params.add(new ProcParam("Foo", Types.VARCHAR));
+		params.add(new ProcParam("foo", Types.VARCHAR));
 		params.add(new ProcParam("bar", Types.VARCHAR));
 
 		ProcMetaData p = new ProcMetaData("test_proc", params);
