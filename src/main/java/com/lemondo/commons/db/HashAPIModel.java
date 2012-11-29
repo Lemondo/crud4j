@@ -154,7 +154,7 @@ public class HashAPIModel extends HashModel {
 				ResultSet rs = queryAPIProc(readApi, args);
 				if (rs.next()) {
 					ResultSetMetaData rsmd = rs.getMetaData();
-					return getRowAsMap(rs, rsmd, rsmd.getColumnCount());
+					return readRow(rs, rsmd, rsmd.getColumnCount());
 				} else {
 					throw new RuntimeException("BOOM: No data found");
 				}
@@ -178,7 +178,7 @@ public class HashAPIModel extends HashModel {
 
 				List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
 				while (rs.next()) {
-					result.add(getRowAsMap(rs, rsmd, numColumns));
+					result.add(readRow(rs, rsmd, numColumns));
 				}
 				return result;
 			} catch (SQLException e) {
@@ -201,7 +201,7 @@ public class HashAPIModel extends HashModel {
 
 				ObjectOutputStream oOut = new ObjectOutputStream(out);
 				while (rs.next()) {
-					oOut.writeObject(getRowAsMap(rs, rsmd, numColumns));
+					oOut.writeObject(readRow(rs, rsmd, numColumns));
 					oOut.flush();
 				}
 			} catch (SQLException e) {
