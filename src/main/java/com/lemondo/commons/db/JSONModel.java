@@ -15,9 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONWriter;
 
-public class JSONModel extends TableModel<JSONObject, JSONArray> {
+public class JsonModel extends TableModel<JSONObject, JSONArray> {
 
-	public JSONModel(TableMetaData meta, Helper helper) {
+	public JsonModel(TableMetaData meta, Helper helper) {
 		super(meta, helper);
 	}
 
@@ -49,7 +49,7 @@ public class JSONModel extends TableModel<JSONObject, JSONArray> {
 		try {
 			JSONObject result = new JSONObject();
 			for (int i = 1; i <= numColumns; i++) {
-				result.append(rsmd.getColumnName(i), rs.getObject(i));
+				result.put(rsmd.getColumnName(i), rs.getObject(i));
 			}
 			return result;
 		} catch (JSONException e) {
@@ -82,6 +82,8 @@ public class JSONModel extends TableModel<JSONObject, JSONArray> {
 				ow.flush();
 			}
 			jw.endArray();
+			ow.flush();
+			ow.close();
 		} catch (JSONException e) {
 			throw new RuntimeException("BOOM!", e);
 		} catch (IOException e) {
