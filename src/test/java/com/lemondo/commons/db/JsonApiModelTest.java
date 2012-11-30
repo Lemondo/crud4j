@@ -32,8 +32,6 @@ public class JsonApiModelTest extends DatabaseTestCase {
 
 	private final String inputDataXml;
 
-	private IDataSet loadedDataSet;
-
 	private final Helper helper;
 
 	public JsonApiModelTest() throws FileNotFoundException, IOException, ClassNotFoundException {
@@ -65,8 +63,7 @@ public class JsonApiModelTest extends DatabaseTestCase {
 
 	@Override
 	protected IDataSet getDataSet() throws Exception {
-		loadedDataSet = new FlatXmlDataSet(new FileInputStream(inputDataXml));
-		return loadedDataSet;
+		return new FlatXmlDataSet(new FileInputStream(inputDataXml));
 	}
 
 	public void testCreate() throws Exception {

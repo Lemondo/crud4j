@@ -2,6 +2,7 @@
 <dataset>
 
     <!-- Test Table -->
+
     <test_table
         id="D001"
         deactivated="1"
@@ -23,5 +24,9 @@
         loginenabled="n"
         loginname="baz"
         password="quz" />
-    
+
+    <test2
+        id="0"
+        data="Hello World!" />
+
 </dataset>

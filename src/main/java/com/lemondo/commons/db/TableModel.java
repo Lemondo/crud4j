@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,10 +34,15 @@ public class TableModel<T, L> implements Model<T, L> {
 	private PreparedStatement prepareInsertStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
-			PreparedStatement stmnt = helper.prepareStatement(metaData.genInsertSql(columns));
+			int autoGenKeys = (key == null) ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
+			PreparedStatement stmnt = helper.prepareStatement(metaData.genInsertSql(columns, (key == null)), autoGenKeys);
 
 			int i = 1;
-			stmnt.setString(i++, key);
+
+			if (key != null) {
+				stmnt.setString(i++, key);
+			}
+
 			for (String col : columns) {
 				if (columnDef.containsKey(col)) {
 					stmnt.setObject(i++, body.get(col), columnDef.get(col));
@@ -49,6 +55,10 @@ public class TableModel<T, L> implements Model<T, L> {
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}
+	}
+
+	private PreparedStatement prepareInsertStmnt(Map<String, Object> body) {
+		return prepareInsertStmnt(null, body);
 	}
 
 	private PreparedStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
@@ -162,8 +172,18 @@ public class TableModel<T, L> implements Model<T, L> {
 
 	@Override
 	public String create(T body) {
-		// TODO Implement it
-		return null;
+		String generatedKey = null;
+		try {
+			PreparedStatement stmnt = prepareInsertStmnt(processor.bodyAsMap(body));
+			stmnt.executeUpdate();
+			ResultSet rs = stmnt.getGeneratedKeys();
+			if (rs.next()) {
+				generatedKey = rs.getString(1);
+			}
+		} catch (SQLException e) {
+			throw new RuntimeException("BOOM!", e);
+		}
+		return generatedKey;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ import org.dbunit.DatabaseTestCase;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import com.lemondo.commons.db.meta.TableMetaData;
@@ -30,11 +31,10 @@ public class BasicTableModelTest extends DatabaseTestCase {
 
 	private final String inputDataXml;
 
-	private IDataSet loadedDataSet;
-
 	private final Helper helper;
 	private final TableMetaData testTable01MetaData;
 	private final TableMetaData testTable02MetaData;
+	private final TableMetaData test2MetaData;
 
 	public BasicTableModelTest() throws FileNotFoundException, IOException, ClassNotFoundException {
 		Properties prop = new Properties();
@@ -58,6 +58,10 @@ public class BasicTableModelTest extends DatabaseTestCase {
 		columnDef.put("loginenabled", Types.VARCHAR);
 		this.testTable01MetaData = new TableMetaData("test_table", columnDef, true);
 		this.testTable02MetaData = new TableMetaData("test_table", columnDef, false);
+
+		HashMap<String, Integer> columnDef2 = new HashMap<String, Integer>();
+		columnDef2.put("data", Types.VARCHAR);
+		this.test2MetaData = new TableMetaData("test2", columnDef2, false);
 	}
 
 	@Override
@@ -67,8 +71,7 @@ public class BasicTableModelTest extends DatabaseTestCase {
 
 	@Override
 	protected IDataSet getDataSet() throws Exception {
-		loadedDataSet = new FlatXmlDataSet(new FileInputStream(inputDataXml));
-		return loadedDataSet;
+		return new FlatXmlDataSet(new FileInputStream(inputDataXml));
 	}
 
 	public void testCreate() throws Exception {
@@ -91,6 +94,19 @@ public class BasicTableModelTest extends DatabaseTestCase {
 			fail("Should throw an exception when trying to insert duplicate entry");
 		} catch (Exception e) {
 		}
+	}
+
+	public void testCreateWithAutoKey() throws Exception {
+		BasicTableModel m = new BasicTableModel(test2MetaData, helper);
+
+		HashMap<String, Object> body = new HashMap<String, Object>();
+		body.put("data", "foo");
+
+		String id = m.create(body);
+
+		ITable actual = getConnection().createQueryTable("test2", "SELECT `data` FROM `test2` WHERE `id` = '" + id + "'");
+		ITable expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testCreate_with_auto_key.xml")).getTable("test2");
+		Assertion.assertEquals(expected, actual);
 	}
 
 	public void testUpdate() throws Exception {

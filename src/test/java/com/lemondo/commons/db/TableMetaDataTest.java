@@ -45,7 +45,7 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(metaDataWithDeactivatedFlag.getColumnDef(), columnDef);
 	}
 
-	public void testGenInsertSql() {
+	public void testGenInsertSqlNoGenKey() {
 		Set<String> columns = columnDef.keySet();
 
 		StringBuilder expected = new StringBuilder("INSERT INTO test_table (`id`");
@@ -54,7 +54,23 @@ public class TableMetaDataTest extends TestCase {
 		}
 		expected.append(") VALUES (?,?,?,?,?)");
 
-		String actual = metaDataWithDeactivatedFlag.genInsertSql(columns);
+		String actual = metaDataWithDeactivatedFlag.genInsertSql(columns, false);
+
+		assertEquals(expected.toString(), actual);
+	}
+
+	public void testGenInsertSqlWithGenKey() {
+		Set<String> columns = columnDef.keySet();
+
+		StringBuilder expected = new StringBuilder("INSERT INTO test_table");
+		String prefix = " (";
+		for (String col : columns) {
+			expected.append(prefix).append("`").append(col).append("`");
+			prefix = ",";
+		}
+		expected.append(") VALUES (?,?,?,?)");
+
+		String actual = metaDataWithDeactivatedFlag.genInsertSql(columns, true);
 
 		assertEquals(expected.toString(), actual);
 	}
