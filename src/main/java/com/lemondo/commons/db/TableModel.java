@@ -30,7 +30,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		this.processor = processor;
 	}
 
-	protected PreparedStatement prepareInsertStmnt(String key, Map<String, Object> body) {
+	private PreparedStatement prepareInsertStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
 			PreparedStatement stmnt = helper.prepareStatement(metaData.genInsertSql(columns));
@@ -51,7 +51,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected PreparedStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
+	private PreparedStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
 			PreparedStatement stmnt = helper.prepareStatement(metaData.genUpdateSql(columns));
@@ -72,7 +72,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected PreparedStatement prepareDeleteStmnt(String key) {
+	private PreparedStatement prepareDeleteStmnt(String key) {
 		try {
 			PreparedStatement stmnt = helper.prepareStatement(metaData.genDeleteSql());
 
@@ -120,7 +120,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected PreparedStatement prepareSelectStmnt(String key, Map<String, Object> options) {
+	private PreparedStatement prepareSelectStmnt(String key, Map<String, Object> options) {
 		Set<FilterCondition> filter = null;
 		List<String> sortFields = null;
 		if (options != null) {
