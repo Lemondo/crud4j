@@ -1,7 +1,7 @@
 package com.lemondo.commons.db;
 
 import java.io.OutputStream;
-import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -30,10 +30,10 @@ public class TableModel<T, L> implements Model<T, L> {
 		this.processor = processor;
 	}
 
-	protected CallableStatement prepareInsertStmnt(String key, Map<String, Object> body) {
+	protected PreparedStatement prepareInsertStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
-			CallableStatement stmnt = helper.prepareCall(metaData.genInsertSql(columns));
+			PreparedStatement stmnt = helper.prepareStatement(metaData.genInsertSql(columns));
 
 			int i = 1;
 			stmnt.setString(i++, key);
@@ -51,10 +51,10 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected CallableStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
+	protected PreparedStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
-			CallableStatement stmnt = helper.prepareCall(metaData.genUpdateSql(columns));
+			PreparedStatement stmnt = helper.prepareStatement(metaData.genUpdateSql(columns));
 
 			int i = 1;
 			for (String col : columns) {
@@ -72,9 +72,9 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected CallableStatement prepareDeleteStmnt(String key) {
+	protected PreparedStatement prepareDeleteStmnt(String key) {
 		try {
-			CallableStatement stmnt = helper.prepareCall(metaData.genDeleteSql());
+			PreparedStatement stmnt = helper.prepareStatement(metaData.genDeleteSql());
 
 			stmnt.setString(1, key);
 
@@ -120,7 +120,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	protected CallableStatement prepareSelectStmnt(String key, Map<String, Object> options) {
+	protected PreparedStatement prepareSelectStmnt(String key, Map<String, Object> options) {
 		Set<FilterCondition> filter = null;
 		List<String> sortFields = null;
 		if (options != null) {
@@ -131,7 +131,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		boolean allRows = key == null;
 
 		try {
-			CallableStatement stmnt = helper.prepareCall(metaData.genSelectSql(allRows, filter, sortFields));
+			PreparedStatement stmnt = helper.prepareStatement(metaData.genSelectSql(allRows, filter, sortFields));
 
 			int i = 1;
 			if (!allRows) {
@@ -159,7 +159,7 @@ public class TableModel<T, L> implements Model<T, L> {
 			throw new RuntimeException("BOOM!", e);
 		}
 	}
-	
+
 	@Override
 	public String create(T body) {
 		// TODO Implement it
