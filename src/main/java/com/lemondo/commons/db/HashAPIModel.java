@@ -3,95 +3,48 @@ package com.lemondo.commons.db;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HashAPIModel extends HashModel {
+public class HashApiModel extends HashModel {
 
-	private ProcMetaData insertApi;
-	private ProcMetaData updateApi;
-	private ProcMetaData deleteApi;
-	private ProcMetaData readApi;
-	private ProcMetaData listApi;
+	private Procedure insertApi;
+	private Procedure updateApi;
+	private Procedure deleteApi;
+	private Procedure readApi;
+	private Procedure listApi;
 
-	public HashAPIModel(Helper helper) {
+	public HashApiModel(Helper helper) {
 		super(null, helper);
 	}
 
-	public HashAPIModel(TableMetaData meta, Helper helper) {
+	public HashApiModel(TableMetaData meta, Helper helper) {
 		super(meta, helper);
 	}
 
-	public void setInsertApi(ProcMetaData insertApi) {
-		this.insertApi = insertApi;
+	public void setInsertApi(ProcMetaData insertMetaData) {
+		this.insertApi = new Procedure(insertMetaData, helper);
 	}
 
-	public void setUpdateApi(ProcMetaData updateApi) {
-		this.updateApi = updateApi;
+	public void setUpdateApi(ProcMetaData updateMetaData) {
+		this.updateApi = new Procedure(updateMetaData, helper);
 	}
 
-	public void setDeleteApi(ProcMetaData deleteApi) {
-		this.deleteApi = deleteApi;
+	public void setDeleteApi(ProcMetaData deleteMetaData) {
+		this.deleteApi = new Procedure(deleteMetaData, helper);
 	}
 
-	public void setReadApi(ProcMetaData readApi) {
-		this.readApi = readApi;
+	public void setReadApi(ProcMetaData readMetaData) {
+		this.readApi = new Procedure(readMetaData, helper);
 	}
 
-	public void setListApi(ProcMetaData listApi) {
-		this.listApi = listApi;
-	}
-
-	private CallableStatement prepareAPIProc(ProcMetaData proc, Map<String, Object> args) throws SQLException {
-		CallableStatement stmnt = helper.prepareCall(proc.genProcedureCall());
-
-		int startInd = 1;
-
-		if (proc.getReturnType() != null) {
-			stmnt.registerOutParameter(startInd++, proc.getReturnType());
-		}
-
-		List<ProcParam> params = proc.getParamDef();
-		if (params != null) {
-			if (args == null) {
-				for (int i = 0; i < params.size(); i++) {
-					stmnt.setNull(startInd + i, params.get(i).getType());
-				}
-			} else {
-				for (int i = 0; i < params.size(); i++) {
-					Object val = args.get(params.get(i).getName());
-					if (val != null) {
-						stmnt.setObject(startInd + i, val, params.get(i).getType());
-					} else {
-						stmnt.setNull(startInd + i, params.get(i).getType());
-					}
-				}
-			}
-		}
-
-		return stmnt;
-	}
-
-	private int callAPIProc(ProcMetaData proc, Map<String, Object> args) throws SQLException {
-		CallableStatement stmnt = prepareAPIProc(proc, args);
-		stmnt.execute();
-
-		if (proc.getReturnType() != null && proc.getReturnType() == Types.INTEGER) {
-			return stmnt.getInt(1);
-		} else {
-			return 1;
-		}
-	}
-
-	private ResultSet queryAPIProc(ProcMetaData proc, Map<String, Object> args) throws SQLException {
-		return prepareAPIProc(proc, args).executeQuery();
+	public void setListApi(ProcMetaData listMetaData) {
+		this.listApi = new Procedure(listMetaData, helper);
 	}
 
 	@Override
@@ -100,7 +53,7 @@ public class HashAPIModel extends HashModel {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>(body);
 				args.put("key", key);
-				return callAPIProc(insertApi, args);
+				return insertApi.executeCall(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
@@ -117,7 +70,7 @@ public class HashAPIModel extends HashModel {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>(body);
 				args.put("key", key);
-				return callAPIProc(updateApi, args);
+				return updateApi.executeCall(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
@@ -134,7 +87,7 @@ public class HashAPIModel extends HashModel {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>();
 				args.put("key", key);
-				return callAPIProc(deleteApi, args);
+				return deleteApi.executeCall(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
@@ -151,7 +104,7 @@ public class HashAPIModel extends HashModel {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>();
 				args.put("key", key);
-				ResultSet rs = queryAPIProc(readApi, args);
+				ResultSet rs = readApi.executeQuery(args);
 				if (rs.next()) {
 					ResultSetMetaData rsmd = rs.getMetaData();
 					return readRow(rs, rsmd, rsmd.getColumnCount());
@@ -172,7 +125,7 @@ public class HashAPIModel extends HashModel {
 	public List<Map<String, Object>> list(Map<String, Object> options) {
 		if (listApi != null) {
 			try {
-				ResultSet rs = queryAPIProc(listApi, options);
+				ResultSet rs = listApi.executeQuery(options);
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int numColumns = rsmd.getColumnCount();
 
@@ -195,7 +148,7 @@ public class HashAPIModel extends HashModel {
 	public void list(OutputStream out, Map<String, Object> options) {
 		if (listApi != null) {
 			try {
-				ResultSet rs = queryAPIProc(listApi, options);
+				ResultSet rs = listApi.executeQuery(options);
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int numColumns = rsmd.getColumnCount();
 

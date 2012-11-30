@@ -18,7 +18,7 @@ import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
-public class HashAPIModelTest extends DatabaseTestCase {
+public class HashApiModelTest extends DatabaseTestCase {
 	private static final String LOGIN_PROPERTIES_FILE = "src/test/login.properties";
 
 	private final String driverName;
@@ -32,7 +32,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 
 	private final Helper helper;
 
-	public HashAPIModelTest() throws FileNotFoundException, IOException, ClassNotFoundException {
+	public HashApiModelTest() throws FileNotFoundException, IOException, ClassNotFoundException {
 		Properties prop = new Properties();
 		prop.load(new FileInputStream(LOGIN_PROPERTIES_FILE));
 
@@ -66,7 +66,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 	}
 
 	public void testCreate() throws Exception {
-		HashAPIModel m = new HashAPIModel(helper);
+		HashApiModel m = new HashApiModel(helper);
 		List<ProcParam> params = new ArrayList<ProcParam>();
 		params.add(new ProcParam("key", Types.VARCHAR));
 		params.add(new ProcParam("empcode", Types.INTEGER));
@@ -95,7 +95,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 	}
 
 	public void testUpdate() throws Exception {
-		HashAPIModel m = new HashAPIModel(helper);
+		HashApiModel m = new HashApiModel(helper);
 		List<ProcParam> params = new ArrayList<ProcParam>();
 		params.add(new ProcParam("key", Types.VARCHAR));
 		params.add(new ProcParam("empcode", Types.INTEGER));
@@ -119,7 +119,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 	}
 
 	public void testDeleteWithoutDeactivatedFlag() throws Exception {
-		HashAPIModel m = new HashAPIModel(helper);
+		HashApiModel m = new HashApiModel(helper);
 		List<ProcParam> params = new ArrayList<ProcParam>();
 		params.add(new ProcParam("key", Types.VARCHAR));
 		m.setDeleteApi(new ProcMetaData("del_test_table", params, Types.INTEGER));
@@ -132,7 +132,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 	}
 
 	public void testRead() throws Exception {
-		HashAPIModel m = new HashAPIModel(helper);
+		HashApiModel m = new HashApiModel(helper);
 		List<ProcParam> params = new ArrayList<ProcParam>();
 		params.add(new ProcParam("key", Types.VARCHAR));
 		m.setReadApi(new ProcMetaData("get_test_table", params));
@@ -159,7 +159,7 @@ public class HashAPIModelTest extends DatabaseTestCase {
 	}
 
 	public void testListAsListOfMap() throws Exception {
-		HashAPIModel m = new HashAPIModel(helper);
+		HashApiModel m = new HashApiModel(helper);
 		List<ProcParam> params = new ArrayList<ProcParam>();
 		params.add(new ProcParam("empcode", Types.INTEGER));
 		m.setListApi(new ProcMetaData("lst_test_table", params));
