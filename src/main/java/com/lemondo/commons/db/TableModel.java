@@ -152,9 +152,9 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int create(String key, T body) {
+	public void create(String key, T body) {
 		try {
-			return prepareInsertStmnt(key, processor.bodyAsMap(body)).executeUpdate();
+			prepareInsertStmnt(key, processor.bodyAsMap(body)).executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}

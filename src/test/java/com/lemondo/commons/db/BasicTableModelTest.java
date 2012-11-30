@@ -80,7 +80,7 @@ public class BasicTableModelTest extends DatabaseTestCase {
 		body.put("password", "supersecretpassword");
 		body.put("loginenabled", "y");
 
-		assertEquals(1, m.create("E011", body));
+		m.create("E011", body);
 
 		IDataSet actual = getConnection().createDataSet(new String[] { "test_table" });
 		IDataSet expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testCreate.xml"));

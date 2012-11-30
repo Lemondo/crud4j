@@ -58,17 +58,17 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int create(String key, T body) {
+	public void create(String key, T body) {
 		if (insertApi != null) {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
 				args.put("key", key);
-				return insertApi.executeCall(args);
+				insertApi.executeCall(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
 		} else if (tableModel != null) {
-			return tableModel.create(key, body);
+			tableModel.create(key, body);
 		} else {
 			throw new RuntimeException("BOOM!");
 		}

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface Model<T, L> {
 
-	public int create(String key, T body);
+	public void create(String key, T body);
 
 	public int update(String key, T body);
 
