@@ -1,4 +1,4 @@
-package com.lemondo.commons.db;
+package com.lemondo.commons.db.processor;
 
 import java.io.OutputStream;
 import java.sql.ResultSet;

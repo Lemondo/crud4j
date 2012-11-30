@@ -7,6 +7,9 @@ import java.sql.Types;
 import java.util.List;
 import java.util.Map;
 
+import com.lemondo.commons.db.meta.ProcMetaData;
+import com.lemondo.commons.db.meta.ProcParam;
+
 public class Procedure {
 
 	private final ProcMetaData meta;

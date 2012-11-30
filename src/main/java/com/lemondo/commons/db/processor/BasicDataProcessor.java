@@ -1,4 +1,4 @@
-package com.lemondo.commons.db;
+package com.lemondo.commons.db.processor;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class HashDataProcessor implements DataProcessor<Map<String, Object>, List<Map<String, Object>>> {
+public class BasicDataProcessor implements DataProcessor<Map<String, Object>, List<Map<String, Object>>> {
 
 	@Override
 	public Map<String, Object> bodyAsMap(Map<String, Object> body) {

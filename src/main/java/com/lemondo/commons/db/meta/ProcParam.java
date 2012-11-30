@@ -1,4 +1,4 @@
-package com.lemondo.commons.db;
+package com.lemondo.commons.db.meta;
 
 public class ProcParam {
 

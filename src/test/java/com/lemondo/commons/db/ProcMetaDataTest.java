@@ -4,6 +4,9 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.lemondo.commons.db.meta.ProcMetaData;
+import com.lemondo.commons.db.meta.ProcParam;
+
 import junit.framework.TestCase;
 
 public class ProcMetaDataTest extends TestCase {

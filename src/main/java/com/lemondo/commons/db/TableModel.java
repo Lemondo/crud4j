@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.lemondo.commons.db.meta.FilterCondition;
+import com.lemondo.commons.db.meta.TableMetaData;
+import com.lemondo.commons.db.processor.DataProcessor;
+
 public class TableModel<T, L> implements Model<T, L> {
 
 	private final TableMetaData metaData;
@@ -136,7 +140,7 @@ public class TableModel<T, L> implements Model<T, L> {
 
 			if (filter != null) {
 				for (FilterCondition condition : filter) {
-					stmnt.setObject(i++, condition.value, condition.type);
+					stmnt.setObject(i++, condition.getValue(), condition.getType());
 				}
 			}
 			// TODO Add paging here

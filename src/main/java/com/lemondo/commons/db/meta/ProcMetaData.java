@@ -1,4 +1,4 @@
-package com.lemondo.commons.db;
+package com.lemondo.commons.db.meta;
 
 import java.util.ArrayList;
 import java.util.List;

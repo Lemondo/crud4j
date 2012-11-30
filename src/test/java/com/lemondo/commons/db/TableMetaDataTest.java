@@ -10,6 +10,9 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.lemondo.commons.db.meta.FilterCondition;
+import com.lemondo.commons.db.meta.TableMetaData;
+
 public class TableMetaDataTest extends TestCase {
 
 	private TableMetaData metaDataWithDeactivatedFlag;
@@ -128,7 +131,7 @@ public class TableMetaDataTest extends TestCase {
 		filter.add(new FilterCondition("empcode", ">", 100, Types.VARCHAR));
 
 		for (FilterCondition condition : filter) {
-			expected.append(" AND `").append(condition.columnName).append("`").append(condition.operator).append("?");
+			expected.append(" AND `").append(condition.getColumnName()).append("`").append(condition.getOperator()).append("?");
 		}
 
 		String actual = metaDataWithDeactivatedFlag.genSelectSql(true, filter, null);
@@ -150,7 +153,7 @@ public class TableMetaDataTest extends TestCase {
 		filter.add(new FilterCondition("empcode", ">", 100, Types.VARCHAR));
 
 		for (FilterCondition condition : filter) {
-			expected.append(" AND `").append(condition.columnName).append("`").append(condition.operator).append("?");
+			expected.append(" AND `").append(condition.getColumnName()).append("`").append(condition.getOperator()).append("?");
 		}
 		expected.append(" ORDER BY `loginname`,`empcode`");
 

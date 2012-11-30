@@ -1,4 +1,4 @@
-package com.lemondo.commons.db;
+package com.lemondo.commons.db.meta;
 
 import java.util.HashMap;
 import java.util.List;
@@ -71,7 +71,7 @@ public class TableMetaData {
 
 		String prefix = "";
 		for (FilterCondition condition : filter) {
-			result.append(prefix).append("`").append(condition.columnName).append("`").append(condition.operator).append("?");
+			result.append(prefix).append("`").append(condition.getColumnName()).append("`").append(condition.getOperator()).append("?");
 			prefix = " AND ";
 		}
 
