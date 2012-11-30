@@ -159,6 +159,12 @@ public class TableModel<T, L> implements Model<T, L> {
 			throw new RuntimeException("BOOM!", e);
 		}
 	}
+	
+	@Override
+	public String create(T body) {
+		// TODO Implement it
+		return null;
+	}
 
 	@Override
 	public int update(String key, T body) {

@@ -75,6 +75,12 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
+	public String create(T Body) {
+		// TODO Implement it
+		return null;
+	}
+
+	@Override
 	public int update(String key, T body) {
 		if (updateApi != null) {
 			try {
