@@ -10,25 +10,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public abstract class TableModel<T, L> implements Model<T, L> {
+public class TableModel<T, L> implements Model<T, L> {
 
-	protected final TableMetaData metaData;
+	private final TableMetaData metaData;
 	private final Map<String, Integer> columnDef;
-	protected final Helper helper;
 
-	public TableModel(TableMetaData meta, Helper helper) {
+	private final Helper helper;
+
+	private final DataProcessor<T, L> processor;
+
+	public TableModel(TableMetaData meta, Helper helper, DataProcessor<T, L> processor) {
 		this.metaData = meta;
 		this.columnDef = (this.metaData == null) ? null : this.metaData.getColumnDef();
 		this.helper = helper;
+		this.processor = processor;
 	}
-
-	protected abstract Map<String, Object> bodyAsMap(T body);
-
-	protected abstract T readRow(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException;
-
-	protected abstract L readAll(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException;
-
-	protected abstract void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException;
 
 	protected CallableStatement prepareInsertStmnt(String key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
@@ -154,7 +150,7 @@ public abstract class TableModel<T, L> implements Model<T, L> {
 	@Override
 	public int create(String key, T body) {
 		try {
-			return prepareInsertStmnt(key, bodyAsMap(body)).executeUpdate();
+			return prepareInsertStmnt(key, processor.bodyAsMap(body)).executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}
@@ -163,7 +159,7 @@ public abstract class TableModel<T, L> implements Model<T, L> {
 	@Override
 	public int update(String key, T body) {
 		try {
-			return prepareUpdateStmnt(key, bodyAsMap(body)).executeUpdate();
+			return prepareUpdateStmnt(key, processor.bodyAsMap(body)).executeUpdate();
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}
@@ -185,7 +181,7 @@ public abstract class TableModel<T, L> implements Model<T, L> {
 
 			if (rs.next()) {
 				ResultSetMetaData rsmd = rs.getMetaData();
-				return readRow(rs, rsmd, rsmd.getColumnCount());
+				return processor.readRow(rs, rsmd, rsmd.getColumnCount());
 			} else {
 				throw new RuntimeException("BOOM: No data found");
 			}
@@ -202,7 +198,7 @@ public abstract class TableModel<T, L> implements Model<T, L> {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numColumns = rsmd.getColumnCount();
 
-			return readAll(rs, rsmd, numColumns);
+			return processor.readAll(rs, rsmd, numColumns);
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}
@@ -216,7 +212,7 @@ public abstract class TableModel<T, L> implements Model<T, L> {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numColumns = rsmd.getColumnCount();
 
-			writeRows(out, rs, rsmd, numColumns);
+			processor.writeRows(out, rs, rsmd, numColumns);
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
 		}
