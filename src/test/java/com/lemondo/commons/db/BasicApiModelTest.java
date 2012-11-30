@@ -16,6 +16,7 @@ import org.dbunit.DatabaseTestCase;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
+import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSet;
 
 import com.lemondo.commons.db.meta.ProcMetaData;
@@ -92,6 +93,22 @@ public class BasicApiModelTest extends DatabaseTestCase {
 			fail("Should throw an exception when trying to insert duplicate entry");
 		} catch (Exception e) {
 		}
+	}
+
+	public void testCreateWithAutoKey() throws Exception {
+		BasicApiModel m = new BasicApiModel(helper);
+		List<ProcParam> params = new ArrayList<ProcParam>();
+		params.add(new ProcParam("data", Types.VARCHAR));
+		m.setInsertApi(new ProcMetaData("ins_test2", params, Types.VARCHAR));
+
+		HashMap<String, Object> body = new HashMap<String, Object>();
+		body.put("data", "foo");
+
+		String id = m.create(body);
+
+		ITable actual = getConnection().createQueryTable("test2", "SELECT `data` FROM `test2` WHERE `id` = '" + id + "'");
+		ITable expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testCreate_with_auto_key.xml")).getTable("test2");
+		Assertion.assertEquals(expected, actual);
 	}
 
 	public void testUpdate() throws Exception {

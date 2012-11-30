@@ -60,15 +60,23 @@ public class Procedure {
 		return stmnt;
 	}
 
-	public int executeCall(Map<String, Object> args) throws SQLException {
+	public Object executeFunction(Map<String, Object> args) throws SQLException {
 		CallableStatement stmnt = prepareCall(args);
 		stmnt.execute();
 
-		if (returnType != null && returnType == Types.INTEGER) {
-			return stmnt.getInt(1);
+		if (returnType == null) {
+			return null;
+		} else if (returnType == Types.INTEGER) {
+			return (Integer) stmnt.getInt(1);
+		} else if (returnType == Types.VARCHAR || returnType == Types.CHAR) {
+			return stmnt.getString(1);
 		} else {
-			return 1;
+			return stmnt.getObject(1);
 		}
+	}
+	
+	public void executeProcedure(Map<String, Object> args) throws SQLException {
+		prepareCall(args).execute();
 	}
 
 	public ResultSet executeQuery(Map<String, Object> args) throws SQLException {

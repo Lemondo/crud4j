@@ -63,7 +63,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
 				args.put("key", key);
-				insertApi.executeCall(args);
+				insertApi.executeProcedure(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
@@ -75,9 +75,19 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public String create(T Body) {
-		// TODO Implement it
-		return null;
+	public String create(T body) {
+		if (insertApi != null) {
+			try {
+				Map<String, Object> args = processor.bodyAsMap(body);
+				return (String) insertApi.executeFunction(args);
+			} catch (SQLException e) {
+				throw new RuntimeException("BOOM!", e);
+			}
+		} else if (tableModel != null) {
+			return tableModel.create(body);
+		} else {
+			throw new RuntimeException("BOOM!");
+		}
 	}
 
 	@Override
@@ -86,7 +96,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
 				args.put("key", key);
-				return updateApi.executeCall(args);
+				return (Integer) updateApi.executeFunction(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
@@ -103,7 +113,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>();
 				args.put("key", key);
-				return deleteApi.executeCall(args);
+				return (Integer) deleteApi.executeFunction(args);
 			} catch (SQLException e) {
 				throw new RuntimeException("BOOM!", e);
 			}
