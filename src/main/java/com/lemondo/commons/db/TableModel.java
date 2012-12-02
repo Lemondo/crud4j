@@ -31,7 +31,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		this.processor = processor;
 	}
 
-	private PreparedStatement prepareInsertStmnt(String key, Map<String, Object> body) {
+	private PreparedStatement prepareInsertStmnt(Object key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
 			int autoGenKeys = (key == null) ? Statement.RETURN_GENERATED_KEYS : Statement.NO_GENERATED_KEYS;
@@ -40,7 +40,7 @@ public class TableModel<T, L> implements Model<T, L> {
 			int i = 1;
 
 			if (key != null) {
-				stmnt.setString(i++, key);
+				stmnt.setObject(i++, key, metaData.getPkType().sqlType);
 			}
 
 			for (String col : columns) {
@@ -61,7 +61,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		return prepareInsertStmnt(null, body);
 	}
 
-	private PreparedStatement prepareUpdateStmnt(String key, Map<String, Object> body) {
+	private PreparedStatement prepareUpdateStmnt(Object key, Map<String, Object> body) {
 		Set<String> columns = body.keySet();
 		try {
 			PreparedStatement stmnt = helper.prepareStatement(metaData.genUpdateSql(columns));
@@ -74,7 +74,7 @@ public class TableModel<T, L> implements Model<T, L> {
 					throw new RuntimeException("BOOM: invalid field!");
 				}
 			}
-			stmnt.setString(i, key);
+			stmnt.setObject(i, key, metaData.getPkType().sqlType);
 
 			return stmnt;
 		} catch (SQLException e) {
@@ -82,11 +82,11 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	private PreparedStatement prepareDeleteStmnt(String key) {
+	private PreparedStatement prepareDeleteStmnt(Object key) {
 		try {
 			PreparedStatement stmnt = helper.prepareStatement(metaData.genDeleteSql());
 
-			stmnt.setString(1, key);
+			stmnt.setObject(1, key, metaData.getPkType().sqlType);
 
 			return stmnt;
 		} catch (SQLException e) {
@@ -130,7 +130,7 @@ public class TableModel<T, L> implements Model<T, L> {
 		}
 	}
 
-	private PreparedStatement prepareSelectStmnt(String key, Map<String, Object> options) {
+	private PreparedStatement prepareSelectStmnt(Object key, Map<String, Object> options) {
 		Set<FilterCondition> filter = null;
 		List<String> sortFields = null;
 		if (options != null) {
@@ -145,7 +145,7 @@ public class TableModel<T, L> implements Model<T, L> {
 
 			int i = 1;
 			if (!allRows) {
-				stmnt.setString(i++, key);
+				stmnt.setObject(i++, key, metaData.getPkType().sqlType);
 			}
 
 			if (filter != null) {
@@ -162,7 +162,7 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public void create(String key, T body) {
+	public void create(Object key, T body) {
 		try {
 			prepareInsertStmnt(key, processor.bodyAsMap(body)).executeUpdate();
 		} catch (SQLException e) {
@@ -171,14 +171,25 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public String create(T body) {
-		String generatedKey = null;
+	public Object create(T body) {
+		Object generatedKey = null;
 		try {
 			PreparedStatement stmnt = prepareInsertStmnt(processor.bodyAsMap(body));
 			stmnt.executeUpdate();
 			ResultSet rs = stmnt.getGeneratedKeys();
 			if (rs.next()) {
-				generatedKey = rs.getString(1);
+				PrimarykeyType pkType = metaData.getPkType();
+				switch (pkType){
+				case VARCHAR:
+					generatedKey = rs.getString(1);
+					break;
+				case INTEGER:
+					generatedKey = rs.getInt(1);
+					break;
+				case LONG:
+					generatedKey = rs.getLong(1);
+					break;
+				}
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException("BOOM!", e);
@@ -187,7 +198,7 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int update(String key, T body) {
+	public int update(Object key, T body) {
 		try {
 			return prepareUpdateStmnt(key, processor.bodyAsMap(body)).executeUpdate();
 		} catch (SQLException e) {
@@ -196,7 +207,7 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int delete(String key) {
+	public int delete(Object key) {
 		try {
 			return prepareDeleteStmnt(key).executeUpdate();
 		} catch (SQLException e) {
@@ -205,7 +216,7 @@ public class TableModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public T read(String key) {
+	public T read(Object key) {
 		try {
 			ResultSet rs = prepareSelectStmnt(key, null).executeQuery();
 

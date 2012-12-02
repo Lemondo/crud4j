@@ -33,8 +33,8 @@ public class TableMetaDataTest extends TestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		metaDataWithDeactivatedFlag = new TableMetaData("test_table", columnDef, true);
-		metaDataWithoutDeactivatedFlag = new TableMetaData("test_table", columnDef, false);
+		metaDataWithDeactivatedFlag = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, true);
+		metaDataWithoutDeactivatedFlag = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, false);
 	}
 
 	protected void tearDown() throws Exception {

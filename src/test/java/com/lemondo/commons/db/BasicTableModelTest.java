@@ -56,12 +56,12 @@ public class BasicTableModelTest extends DatabaseTestCase {
 		columnDef.put("loginname", Types.VARCHAR);
 		columnDef.put("password", Types.VARCHAR);
 		columnDef.put("loginenabled", Types.VARCHAR);
-		this.testTable01MetaData = new TableMetaData("test_table", columnDef, true);
-		this.testTable02MetaData = new TableMetaData("test_table", columnDef, false);
+		this.testTable01MetaData = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, true);
+		this.testTable02MetaData = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, false);
 
 		HashMap<String, Integer> columnDef2 = new HashMap<String, Integer>();
 		columnDef2.put("data", Types.VARCHAR);
-		this.test2MetaData = new TableMetaData("test2", columnDef2, false);
+		this.test2MetaData = new TableMetaData("test2", columnDef2, PrimarykeyType.INTEGER, false);
 	}
 
 	@Override
@@ -102,7 +102,7 @@ public class BasicTableModelTest extends DatabaseTestCase {
 		HashMap<String, Object> body = new HashMap<String, Object>();
 		body.put("data", "foo");
 
-		String id = m.create(body);
+		int id = (Integer) m.create(body);
 
 		ITable actual = getConnection().createQueryTable("test2", "SELECT `data` FROM `test2` WHERE `id` = '" + id + "'");
 		ITable expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testCreate_with_auto_key.xml")).getTable("test2");

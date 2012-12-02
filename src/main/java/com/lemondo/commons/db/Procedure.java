@@ -67,7 +67,9 @@ public class Procedure {
 		if (returnType == null) {
 			return null;
 		} else if (returnType == Types.INTEGER) {
-			return (Integer) stmnt.getInt(1);
+			return stmnt.getInt(1);
+		} else if (returnType == Types.BIGINT) {
+			return stmnt.getLong(1);
 		} else if (returnType == Types.VARCHAR || returnType == Types.CHAR) {
 			return stmnt.getString(1);
 		} else {

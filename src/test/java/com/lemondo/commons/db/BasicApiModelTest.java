@@ -104,7 +104,7 @@ public class BasicApiModelTest extends DatabaseTestCase {
 		HashMap<String, Object> body = new HashMap<String, Object>();
 		body.put("data", "foo");
 
-		String id = m.create(body);
+		String id = (String) m.create(body);
 
 		ITable actual = getConnection().createQueryTable("test2", "SELECT `data` FROM `test2` WHERE `id` = '" + id + "'");
 		ITable expected = new FlatXmlDataSet(new FileInputStream("src/test/data/out-testCreate_with_auto_key.xml")).getTable("test2");

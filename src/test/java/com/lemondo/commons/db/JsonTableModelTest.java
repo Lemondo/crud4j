@@ -60,8 +60,8 @@ public class JsonTableModelTest extends DatabaseTestCase {
 		columnDef.put("loginname", Types.VARCHAR);
 		columnDef.put("password", Types.VARCHAR);
 		columnDef.put("loginenabled", Types.VARCHAR);
-		this.testTable01MetaData = new TableMetaData("test_table", columnDef, true);
-		this.testTable02MetaData = new TableMetaData("test_table", columnDef, false);
+		this.testTable01MetaData = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, true);
+		this.testTable02MetaData = new TableMetaData("test_table", columnDef, PrimarykeyType.VARCHAR, false);
 	}
 
 	@Override

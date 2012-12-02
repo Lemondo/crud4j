@@ -58,7 +58,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public void create(String key, T body) {
+	public void create(Object key, T body) {
 		if (insertApi != null) {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
@@ -75,7 +75,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public String create(T body) {
+	public Object create(T body) {
 		if (insertApi != null) {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
@@ -91,7 +91,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int update(String key, T body) {
+	public int update(Object key, T body) {
 		if (updateApi != null) {
 			try {
 				Map<String, Object> args = processor.bodyAsMap(body);
@@ -108,7 +108,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public int delete(String key) {
+	public int delete(Object key) {
 		if (deleteApi != null) {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>();
@@ -125,7 +125,7 @@ public class ApiModel<T, L> implements Model<T, L> {
 	}
 
 	@Override
-	public T read(String key) {
+	public T read(Object key) {
 		if (readApi != null) {
 			try {
 				Map<String, Object> args = new HashMap<String, Object>();
