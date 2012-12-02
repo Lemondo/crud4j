@@ -10,6 +10,7 @@ import java.util.Set;
 
 import junit.framework.TestCase;
 
+import com.lemondo.commons.db.exception.InvalidFieldException;
 import com.lemondo.commons.db.meta.FilterCondition;
 import com.lemondo.commons.db.meta.TableMetaData;
 
@@ -45,7 +46,7 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(metaDataWithDeactivatedFlag.getColumnDef(), columnDef);
 	}
 
-	public void testGenInsertSqlNoGenKey() {
+	public void testGenInsertSqlNoGenKey() throws InvalidFieldException {
 		Set<String> columns = columnDef.keySet();
 
 		StringBuilder expected = new StringBuilder("INSERT INTO test_table (`id`");
@@ -59,7 +60,7 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(expected.toString(), actual);
 	}
 
-	public void testGenInsertSqlWithGenKey() {
+	public void testGenInsertSqlWithGenKey() throws InvalidFieldException {
 		Set<String> columns = columnDef.keySet();
 
 		StringBuilder expected = new StringBuilder("INSERT INTO test_table");
@@ -75,7 +76,7 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(expected.toString(), actual);
 	}
 
-	public void testGenUpdateSqlWithDeactivatedFlag() {
+	public void testGenUpdateSqlWithDeactivatedFlag() throws InvalidFieldException {
 		Set<String> columns = columnDef.keySet();
 
 		StringBuilder expected = new StringBuilder("UPDATE test_table SET ");
@@ -90,7 +91,7 @@ public class TableMetaDataTest extends TestCase {
 		assertEquals(expected.toString(), actual);
 	}
 
-	public void testGenUpdateSqlWithoutDeactivatedFlag() {
+	public void testGenUpdateSqlWithoutDeactivatedFlag() throws InvalidFieldException {
 		Set<String> columns = columnDef.keySet();
 
 		StringBuilder expected = new StringBuilder("UPDATE test_table SET ");

@@ -7,13 +7,49 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public abstract class Helper {
+
+	private static final Set<Integer> UNIQUE_KEY_VIOLATION_CODES = new HashSet<Integer>();
+	static {
+		UNIQUE_KEY_VIOLATION_CODES.add(1022);
+		UNIQUE_KEY_VIOLATION_CODES.add(1062);
+		UNIQUE_KEY_VIOLATION_CODES.add(1169);
+		UNIQUE_KEY_VIOLATION_CODES.add(1586);
+	}
+
+	private static final Set<Integer> FOREIGN_KEY_VIOLATION_CODES = new HashSet<Integer>();
+	static {
+		FOREIGN_KEY_VIOLATION_CODES.add(1216);
+		FOREIGN_KEY_VIOLATION_CODES.add(1217);
+		FOREIGN_KEY_VIOLATION_CODES.add(1451);
+		FOREIGN_KEY_VIOLATION_CODES.add(1452);
+	}
+
+	private static final Set<Integer> NOT_NULL_VIOLATION_CODES = new HashSet<Integer>();
+	static {
+		NOT_NULL_VIOLATION_CODES.add(1364);
+		NOT_NULL_VIOLATION_CODES.add(1048);
+	}
+
+	public static boolean isUniqueKeyViolation(SQLException e) {
+		return UNIQUE_KEY_VIOLATION_CODES.contains(e.getErrorCode());
+	}
+
+	public static boolean isForeignKeyViolation(SQLException e) {
+		return FOREIGN_KEY_VIOLATION_CODES.contains(e.getErrorCode());
+	}
+
+	public static boolean isNotNullViolation(SQLException e) {
+		return NOT_NULL_VIOLATION_CODES.contains(e.getErrorCode());
+	}
 
 	private List<Statement> statementPool;
 
@@ -29,18 +65,14 @@ public abstract class Helper {
 		private final String userName;
 		private final String password;
 
-		private PlainJdbcHelper(String driverName, String uri, String userName, String password) {
+		private PlainJdbcHelper(String driverName, String uri, String userName, String password) throws ClassNotFoundException {
 			super();
 
 			this.uri = uri;
 			this.userName = userName;
 			this.password = password;
 
-			try {
-				Class.forName(driverName);
-			} catch (ClassNotFoundException e) {
-				throw new RuntimeException("BOOM!", e);
-			}
+			Class.forName(driverName);
 		}
 
 		@Override
@@ -59,13 +91,9 @@ public abstract class Helper {
 			this.ds = ds;
 		}
 
-		private DataSourceHelper(String dataSourceJndi) {
+		private DataSourceHelper(String dataSourceJndi) throws NamingException {
 			super();
-			try {
-				this.ds = (DataSource) new InitialContext().lookup(dataSourceJndi);
-			} catch (NamingException e) {
-				throw new RuntimeException("BOOM!", e);
-			}
+			this.ds = (DataSource) new InitialContext().lookup(dataSourceJndi);
 		}
 
 		@Override
@@ -78,11 +106,11 @@ public abstract class Helper {
 		return new DataSourceHelper(ds);
 	}
 
-	public static Helper getInstance(String dataSourceJndi) {
+	public static Helper getInstance(String dataSourceJndi) throws NamingException {
 		return new DataSourceHelper(dataSourceJndi);
 	}
 
-	public static Helper getInstance(String driverName, String uri, String userName, String password) {
+	public static Helper getInstance(String driverName, String uri, String userName, String password) throws ClassNotFoundException {
 		return new PlainJdbcHelper(driverName, uri, userName, password);
 	}
 

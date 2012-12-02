@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.lemondo.commons.db.exception.DataProcessingException;
+
 public class BasicDataProcessor implements DataProcessor<Map<String, Object>, List<Map<String, Object>>> {
 
 	@Override
@@ -37,7 +39,7 @@ public class BasicDataProcessor implements DataProcessor<Map<String, Object>, Li
 	}
 
 	@Override
-	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException {
+	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException {
 		try {
 			ObjectOutputStream oOut = new ObjectOutputStream(out);
 			while (rs.next()) {
@@ -45,7 +47,7 @@ public class BasicDataProcessor implements DataProcessor<Map<String, Object>, Li
 				oOut.flush();
 			}
 		} catch (IOException e) {
-			throw new RuntimeException("BOOM!", e);
+			throw new DataProcessingException("Cannot write into the OutputStream", e);
 		}
 	}
 

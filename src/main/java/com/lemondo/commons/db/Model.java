@@ -3,20 +3,25 @@ package com.lemondo.commons.db;
 import java.io.OutputStream;
 import java.util.Map;
 
+import com.lemondo.commons.db.exception.DataProcessingException;
+import com.lemondo.commons.db.exception.DatabaseOperationException;
+import com.lemondo.commons.db.exception.InvalidFieldException;
+import com.lemondo.commons.db.exception.NoDataFoundException;
+
 public interface Model<T, L> {
 
-	public void create(Object key, T body);
-	
-	public Object create(T body);
+	public void create(Object key, T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public int update(Object key, T body);
+	public Object create(T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public int delete(Object key);
+	public int update(Object key, T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public T read(Object key);
+	public int delete(Object key) throws DatabaseOperationException;
 
-	public L list(Map<String, Object> options);
+	public T read(Object key) throws NoDataFoundException, DataProcessingException, DatabaseOperationException;
 
-	public void list(OutputStream out, Map<String, Object> options);
+	public L list(Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
+
+	public void list(OutputStream out, Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
 
 }
