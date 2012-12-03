@@ -1,19 +1,27 @@
 package com.lemondo.commons.db;
 
 import java.io.OutputStream;
-import java.sql.SQLException;
 import java.util.Map;
 
-public interface Model<T> {
+import com.lemondo.commons.db.exception.DataProcessingException;
+import com.lemondo.commons.db.exception.DatabaseOperationException;
+import com.lemondo.commons.db.exception.InvalidFieldException;
+import com.lemondo.commons.db.exception.NoDataFoundException;
 
-	public int create(String key, T body) throws SQLException;
+public interface Model<T, L> {
 
-	public int update(String key, T body) throws SQLException;
+	public void create(Object key, T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public int delete(String key) throws SQLException;
+	public Object create(T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public T read(String key) throws SQLException;
+	public int update(Object key, T body) throws InvalidFieldException, DataProcessingException, DatabaseOperationException;
 
-	public void list(OutputStream out, Map<String, Object> options) throws SQLException;
+	public int delete(Object key) throws DatabaseOperationException;
+
+	public T read(Object key) throws NoDataFoundException, DataProcessingException, DatabaseOperationException;
+
+	public L list(Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
+
+	public void list(OutputStream out, Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
 
 }
