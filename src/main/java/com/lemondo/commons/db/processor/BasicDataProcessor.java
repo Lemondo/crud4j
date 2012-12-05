@@ -24,7 +24,7 @@ public class BasicDataProcessor implements DataProcessor<Map<String, Object>, Li
 	public Map<String, Object> readRow(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException {
 		Map<String, Object> result = new HashMap<String, Object>();
 		for (int i = 1; i <= numColumns; i++) {
-			result.put(rsmd.getColumnName(i), rs.getObject(i));
+			result.put(rsmd.getColumnLabel(i), rs.getObject(i));
 		}
 		return result;
 	}
