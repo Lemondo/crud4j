@@ -4,7 +4,7 @@
 
   <groupId>com.lemondo.commons.db</groupId>
   <artifactId>crud4j</artifactId>
-  <version>0.1</version>
+  <version>0.1.1</version>
   <packaging>jar</packaging>
 
   <name>crud4j</name>
@@ -25,12 +25,6 @@
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.19</version>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>dbunit</groupId>
