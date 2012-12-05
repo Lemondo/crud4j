@@ -186,14 +186,14 @@ public class BasicApiModelTest extends DatabaseTestCase {
 		Map<String, Object> row0 = result.get(0);
 		assertEquals("E001", row0.get("id"));
 		assertEquals(new Integer(1), (Integer) row0.get("employee"));
-		assertEquals("foo", row0.get("loginname"));
+		assertEquals("foo", row0.get("login"));
 		assertEquals("bar", row0.get("password"));
 		assertEquals("y", row0.get("loginenabled"));
 
 		Map<String, Object> row1 = result.get(1);
 		assertEquals("E999", row1.get("id"));
 		assertEquals(new Integer(999999), (Integer) row1.get("employee"));
-		assertEquals("baz", row1.get("loginname"));
+		assertEquals("baz", row1.get("login"));
 		assertEquals("quz", row1.get("password"));
 		assertEquals("n", row1.get("loginenabled"));
 
@@ -207,7 +207,7 @@ public class BasicApiModelTest extends DatabaseTestCase {
 		Map<String, Object> row = result.get(0);
 		assertEquals("E999", row.get("id"));
 		assertEquals(new Integer(999999), (Integer) row.get("employee"));
-		assertEquals("baz", row.get("loginname"));
+		assertEquals("baz", row.get("login"));
 		assertEquals("quz", row.get("password"));
 		assertEquals("n", row.get("loginenabled"));
 	}

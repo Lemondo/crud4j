@@ -47,7 +47,7 @@ public class JsonDataProcessor implements DataProcessor<JSONObject, JSONArray> {
 		try {
 			JSONObject result = new JSONObject();
 			for (int i = 1; i <= numColumns; i++) {
-				result.put(rsmd.getColumnName(i), rs.getObject(i));
+				result.put(rsmd.getColumnLabel(i), rs.getObject(i));
 			}
 			return result;
 		} catch (JSONException e) {
@@ -74,7 +74,7 @@ public class JsonDataProcessor implements DataProcessor<JSONObject, JSONArray> {
 			while (rs.next()) {
 				jw.object();
 				for (int i = 1; i <= numColumns; i++) {
-					jw.key(rsmd.getColumnName(i)).value(rs.getObject(i));
+					jw.key(rsmd.getColumnLabel(i)).value(rs.getObject(i));
 				}
 				jw.endObject();
 				ow.flush();
