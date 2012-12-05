@@ -4,7 +4,7 @@
 
   <groupId>com.lemondo.commons.db</groupId>
   <artifactId>crud4j</artifactId>
-  <version>0.1</version>
+  <version>0.1.1</version>
   <packaging>jar</packaging>
 
   <name>crud4j</name>
