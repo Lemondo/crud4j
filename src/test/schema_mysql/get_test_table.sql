@@ -7,7 +7,7 @@ CREATE PROCEDURE `get_test_table`(IN `p_id` VARCHAR(36))
 READS SQL DATA
 BEGIN
   SELECT t.`id`
-        ,t.`empcode`
+        ,t.`empcode` AS `employee`
         ,t.`loginname`
         ,t.`password`
         ,t.`loginenabled`

@@ -141,7 +141,7 @@ public class JsonApiModelTest extends DatabaseTestCase {
 		JSONObject result = m.read("E001");
 
 		assertEquals("E001", (String) result.get("id"));
-		assertEquals(new Integer(1), (Integer) result.get("empcode"));
+		assertEquals(new Integer(1), (Integer) result.get("employee"));
 		assertEquals("foo", (String) result.get("loginname"));
 		assertEquals("bar", (String) result.get("password"));
 		assertEquals("y", (String) result.get("loginenabled"));
@@ -169,15 +169,15 @@ public class JsonApiModelTest extends DatabaseTestCase {
 
 		JSONObject row0 = result.getJSONObject(0);
 		assertEquals("E001", row0.get("id"));
-		assertEquals(new Integer(1), (Integer) row0.get("empcode"));
-		assertEquals("foo", row0.get("loginname"));
+		assertEquals(new Integer(1), (Integer) row0.get("employee"));
+		assertEquals("foo", row0.get("login"));
 		assertEquals("bar", row0.get("password"));
 		assertEquals("y", row0.get("loginenabled"));
 
 		JSONObject row1 = result.getJSONObject(1);
 		assertEquals("E999", row1.get("id"));
-		assertEquals(new Integer(999999), (Integer) row1.get("empcode"));
-		assertEquals("baz", row1.get("loginname"));
+		assertEquals(new Integer(999999), (Integer) row1.get("employee"));
+		assertEquals("baz", row1.get("login"));
 		assertEquals("quz", row1.get("password"));
 		assertEquals("n", row1.get("loginenabled"));
 
@@ -190,8 +190,8 @@ public class JsonApiModelTest extends DatabaseTestCase {
 		assertEquals(1, result.length());
 		JSONObject row = result.getJSONObject(0);
 		assertEquals("E999", row.get("id"));
-		assertEquals(new Integer(999999), (Integer) row.get("empcode"));
-		assertEquals("baz", row.get("loginname"));
+		assertEquals(new Integer(999999), (Integer) row.get("employee"));
+		assertEquals("baz", row.get("login"));
 		assertEquals("quz", row.get("password"));
 		assertEquals("n", row.get("loginenabled"));
 	}
