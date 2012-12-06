@@ -1,6 +1,7 @@
 package com.lemondo.commons.db;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import com.lemondo.commons.db.exception.DataProcessingException;
@@ -23,5 +24,7 @@ public interface Model<T, L> {
 	public L list(Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
 
 	public void list(OutputStream out, Map<String, Object> options) throws DataProcessingException, DatabaseOperationException;
+
+	public void list(OutputStream out, Map<String, Object> options, String encoding) throws DataProcessingException, DatabaseOperationException, UnsupportedEncodingException;
 
 }

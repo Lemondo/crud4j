@@ -1,6 +1,7 @@
 package com.lemondo.commons.db;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -199,13 +200,26 @@ public class ApiModel<T, L> implements Model<T, L> {
 
 	@Override
 	public void list(OutputStream out, Map<String, Object> options) throws DataProcessingException, DatabaseOperationException {
+		try {
+			list(out, options, null);
+		} catch (UnsupportedEncodingException e) {
+		}
+	}
+
+	@Override
+	public void list(OutputStream out, Map<String, Object> options, String encoding) throws DataProcessingException, DatabaseOperationException,
+			UnsupportedEncodingException {
 		if (listApi != null) {
 			try {
 				ResultSet rs = listApi.executeQuery(options);
 				ResultSetMetaData rsmd = rs.getMetaData();
 				int numColumns = rsmd.getColumnCount();
 
-				processor.writeRows(out, rs, rsmd, numColumns);
+				if (encoding != null) {
+					processor.writeRows(out, rs, rsmd, numColumns, encoding);
+				} else {
+					processor.writeRows(out, rs, rsmd, numColumns);
+				}
 			} catch (SQLException e) {
 				throw new DatabaseOperationException("Error while DB operation", e);
 			}

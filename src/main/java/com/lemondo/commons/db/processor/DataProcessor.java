@@ -1,6 +1,7 @@
 package com.lemondo.commons.db.processor;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -17,5 +18,8 @@ public interface DataProcessor<T, L> {
 	public L readAll(ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException;
 
 	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException;
+
+	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns, String encoding) throws SQLException,
+			DataProcessingException, UnsupportedEncodingException;
 
 }

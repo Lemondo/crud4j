@@ -51,4 +51,9 @@ public class BasicDataProcessor implements DataProcessor<Map<String, Object>, Li
 		}
 	}
 
+	@Override
+	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns, String encoding) throws SQLException, DataProcessingException {
+		writeRows(out, rs, rsmd, numColumns);
+	}
+
 }

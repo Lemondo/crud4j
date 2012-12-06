@@ -1,6 +1,7 @@
 package com.lemondo.commons.db;
 
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -264,12 +265,25 @@ public class TableModel<T, L> implements Model<T, L> {
 	@Override
 	public void list(OutputStream out, Map<String, Object> options) throws DataProcessingException, DatabaseOperationException {
 		try {
+			list(out, options, null);
+		} catch (UnsupportedEncodingException e) {
+		}
+	}
+
+	@Override
+	public void list(OutputStream out, Map<String, Object> options, String encoding) throws DataProcessingException, DatabaseOperationException,
+			UnsupportedEncodingException {
+		try {
 			ResultSet rs = prepareSelectStmnt(null, options).executeQuery();
 
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int numColumns = rsmd.getColumnCount();
 
-			processor.writeRows(out, rs, rsmd, numColumns);
+			if (encoding != null) {
+				processor.writeRows(out, rs, rsmd, numColumns, encoding);
+			} else {
+				processor.writeRows(out, rs, rsmd, numColumns);
+			}
 		} catch (SQLException e) {
 			throw new DatabaseOperationException("Error while DB operation", e);
 		}

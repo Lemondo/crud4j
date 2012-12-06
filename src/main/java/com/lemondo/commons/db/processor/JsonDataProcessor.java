@@ -3,6 +3,7 @@ package com.lemondo.commons.db.processor;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -64,11 +65,8 @@ public class JsonDataProcessor implements DataProcessor<JSONObject, JSONArray> {
 		return result;
 	}
 
-	@Override
-	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException {
-		OutputStreamWriter ow = new OutputStreamWriter(out);
+	private void writeRows(OutputStreamWriter ow, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException {
 		JSONWriter jw = new JSONWriter(ow);
-
 		try {
 			jw.array();
 			while (rs.next()) {
@@ -87,6 +85,17 @@ public class JsonDataProcessor implements DataProcessor<JSONObject, JSONArray> {
 		} catch (IOException e) {
 			throw new DataProcessingException("Cannot flush the OutputStream", e);
 		}
+	}
+
+	@Override
+	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns) throws SQLException, DataProcessingException {
+		writeRows(new OutputStreamWriter(out), rs, rsmd, numColumns);
+	}
+
+	@Override
+	public void writeRows(OutputStream out, ResultSet rs, ResultSetMetaData rsmd, int numColumns, String encoding) throws SQLException,
+			DataProcessingException, UnsupportedEncodingException {
+		writeRows(new OutputStreamWriter(out, encoding), rs, rsmd, numColumns);
 	}
 
 }
